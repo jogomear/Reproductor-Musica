@@ -1,5 +1,7 @@
 package paquetePrueba;
 
 public class ClasePrueba {
-klik
+	public static void main(String[] args) {
+		
+	}
 }
