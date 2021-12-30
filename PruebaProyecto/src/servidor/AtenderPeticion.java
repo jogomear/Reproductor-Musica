@@ -4,7 +4,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 
 public class AtenderPeticion implements Runnable{
@@ -15,20 +17,42 @@ public class AtenderPeticion implements Runnable{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		try(DataInputStream dis = new DataInputStream(sCliente.getInputStream());
-				DataOutputStream dos = new DataOutputStream(sCliente.getOutputStream())){
-			String petic = dis.readLine();
-			File f = buscaCancion(petic);
-			if(f.exists()) {
-				try(DataInputStream is = new DataInputStream(new FileInputStream(f))){
-					
+//		try(DataInputStream dis = new DataInputStream(sCliente.getInputStream());
+//				DataOutputStream dos = new DataOutputStream(sCliente.getOutputStream())){
+//			String petic = dis.readLine();
+//			File f = buscaCancion(petic);
+//			if(f.exists()) {
+//				try(DataInputStream is = new DataInputStream(new FileInputStream(f))){
+//					
+//				}
+//			}else {
+//				dos.writeBytes("La cancion introducida no esta disponible");
+//			}
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		try(DataInputStream dis = new DataInputStream(sCliente.getInputStream())){
+			String nombreCancion = dis.readLine();
+			File cancion = buscaCancion(nombreCancion);
+			try(OutputStream o = sCliente.getOutputStream();
+					FileInputStream i = new FileInputStream(cancion)){
+				byte[] b = new byte[1024*10];
+				int leidos = i.read(b);
+				while (leidos!=-1) {
+					o.write(b,0,leidos);
+					leidos = i.read(b);
 				}
-			}else {
-				dos.writeBytes("La cancion introducida no esta disponible");
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
+		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
 	}
 	
@@ -43,3 +67,4 @@ public class AtenderPeticion implements Runnable{
 	}
 
 }
+
