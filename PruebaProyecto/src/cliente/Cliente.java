@@ -36,5 +36,21 @@ public class Cliente {
 		Cliente cl = new Cliente("localhost", 8000);
 		cl.reproduccionSinGuardar();
 	}
+	
+	public String[] listarCanciones() {
+		try(Socket s = new Socket(this.host, this.puerto);
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+				InputStreamReader reader = new InputStreamReader(s.getInputStream())){
+			
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 
 }

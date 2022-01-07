@@ -33,7 +33,7 @@ public class AtenderPeticion implements Runnable{
 //			e.printStackTrace();
 //		}
 		try(DataInputStream dis = new DataInputStream(sCliente.getInputStream())){
-			String nombreCancion = dis.readLine();
+			/*String nombreCancion = dis.readLine();
 			File cancion = buscaCancion(nombreCancion);
 			try(OutputStream o = sCliente.getOutputStream();
 					FileInputStream i = new FileInputStream(cancion)){
@@ -49,6 +49,31 @@ public class AtenderPeticion implements Runnable{
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}*/
+			String peticion = dis.readLine();
+			switch(peticion) {
+			case "1":
+				String nombreCancion = dis.readLine();
+				File cancion = buscaCancion(nombreCancion);
+				try(OutputStream o = sCliente.getOutputStream();
+						FileInputStream i = new FileInputStream(cancion)){
+					byte[] b = new byte[1024*10];
+					int leidos = i.read(b);
+					while (leidos!=-1) {
+						o.write(b,0,leidos);
+						leidos = i.read(b);
+					}
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			case "2":
+				
+			case "3":
+				
 			}
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
@@ -64,6 +89,11 @@ public class AtenderPeticion implements Runnable{
 	private File buscaCancion(String nombreCancion) {
 		File canc = new File(dirHome + "\\" + nombreCancion + ".mp3");
 		return canc;
+	}
+	
+	private String[] listarCanciones() {
+		File contenidoDirectorio = new File(this.dirHome + "\\canciones");
+		return contenidoDirectorio.list();
 	}
 
 }
