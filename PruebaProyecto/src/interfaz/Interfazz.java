@@ -78,11 +78,6 @@ public class Interfazz {
 	    
 	    final List list2 = new List(g3, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 	    list2.setLayoutData(new GridData(200,100));
-	    
-
-//	    for (int loopIndex = 0; loopIndex < 100; loopIndex++) {
-//	      list2.add("Item " + loopIndex);
-//	    }
 
 	    list2.addSelectionListener(new SelectionListener() {
 
@@ -117,7 +112,6 @@ public class Interfazz {
     			@Override
     			public void widgetDefaultSelected(SelectionEvent arg0) {
     				// TODO Auto-generated method stub
-//    				list2.add(list.getSelection()[0]);
     			}
 
     			@Override
