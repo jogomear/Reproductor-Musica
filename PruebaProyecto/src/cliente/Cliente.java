@@ -37,11 +37,18 @@ public class Cliente {
 		cl.reproduccionSinGuardar();
 	}
 	
-	public String[] listarCanciones() {
-		try(Socket s = new Socket(this.host, this.puerto);
-				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
-				InputStreamReader reader = new InputStreamReader(s.getInputStream())){
-			
+	public /*String[]*/File listarCanciones() {
+		try(Socket s = new Socket(this.host, this.puerto)){
+			int numBytesLeidos;
+			byte[]  buff = new byte[1024*32];
+			try(InputStream recibido = s.getInputStream();FileOutputStream nuevo = new FileOutputStream("listadoCanciones.txt");){
+				while ((numBytesLeidos = recibido.read(buff)) != -1) {
+					nuevo.write(buff, 0, numBytesLeidos);
+				}
+				return new File("listadoCanciones.txt");
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -49,6 +56,7 @@ public class Cliente {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
 	
 	
