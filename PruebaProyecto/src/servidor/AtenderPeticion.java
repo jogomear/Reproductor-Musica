@@ -71,7 +71,12 @@ public class AtenderPeticion implements Runnable{
 					e.printStackTrace();
 				}
 			case "2":
-				
+				try(DataOutputStream dos = new DataOutputStream(this.sCliente.getOutputStream())){
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			case "3":
 				
 			}
@@ -91,9 +96,9 @@ public class AtenderPeticion implements Runnable{
 		return canc;
 	}
 	
-	private String[] listarCanciones() {
+	private /*String[]*/File listarCanciones() {
 		File contenidoDirectorio = new File(this.dirHome + "\\canciones");
-		return contenidoDirectorio.list();
+		return contenidoDirectorio/*.list()*/;
 	}
 
 }
