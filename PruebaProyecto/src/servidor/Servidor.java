@@ -11,7 +11,7 @@ public class Servidor {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		ExecutorService pool = Executors.newCachedThreadPool();
-		try(ServerSocket ss = new ServerSocket(55555)){
+		try(ServerSocket ss = new ServerSocket(50000)){
 			while(true) {
 				try {
 					final Socket conexion = ss.accept();

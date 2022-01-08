@@ -1,5 +1,10 @@
 package interfaz;
 
+import java.io.IOException;
+
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
@@ -23,14 +28,18 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
+import cliente.Cliente;
+
 public class Interfazz {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws LineUnavailableException, IOException, UnsupportedAudioFileException, InterruptedException {
 		Display display = new Display();
 	    Shell shell = new Shell(display);
 	    shell.setText("List Example");
 	    shell.setSize(270, 450);
 	    shell.setLayout(new GridLayout(1, false));
+	    
+	    Cliente cl = new Cliente("localhost", 50000);
 	    
 	    Group g1 = new Group(shell, SWT.NONE);
 	    g1.setText("CancionesDisponibles");
@@ -51,8 +60,8 @@ public class Interfazz {
 	    list.setLayoutData(new GridData(200,100));
 	    
 
-	    for (int loopIndex = 0; loopIndex < 100; loopIndex++) {
-	      list.add("Item " + loopIndex);
+	    for (int loopIndex = 0; loopIndex < cl.listadoCanciones.size(); loopIndex++) {
+	      list.add(cl.listadoCanciones.get(loopIndex));
 	    }
 
 	    list.addSelectionListener(new SelectionListener() {
@@ -107,7 +116,7 @@ public class Interfazz {
 	    	MenuItem mi1 = new MenuItem(menu, SWT.PUSH);
 	    	MenuItem mi2 = new MenuItem(menu, SWT.PUSH);
 	    	
-	    	SelectionListener sl = new SelectionListener() {
+	    	SelectionListener sl1 = new SelectionListener() {
 
     			@Override
     			public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -124,15 +133,32 @@ public class Interfazz {
     			}
     			
     		};
+    		
+    		SelectionListener sl2 = new SelectionListener() {
+
+    			@Override
+    			public void widgetDefaultSelected(SelectionEvent arg0) {
+    				// TODO Auto-generated method stub
+    			}
+
+    			@Override
+    			public void widgetSelected(SelectionEvent arg0) {
+    				// TODO Auto-generated method stub
+    				cl.reproduccionSinGuardar(list.getItem(list.getSelectionIndex()));
+    			}
+    			
+    		};
 	    	
 	    	public void menuShown(MenuEvent e) {
-	    		mi1.removeSelectionListener(sl); //Para que no se añadan infinitos SelectionListener (Uno por cada vez que se abra el menu)
+	    		mi1.removeSelectionListener(sl1); //Para que no se añadan infinitos SelectionListener (Uno por cada vez que se abra el menu)
+	    		mi2.removeSelectionListener(sl2);
 	    		int index = list.getFocusIndex();
 	    		System.out.println(index);
 	    		mi1.setText("Añadir a la cola");
 	    		mi2.setText("Reproducir");
 	    		
-	    		mi1.addSelectionListener(sl);
+	    		mi1.addSelectionListener(sl1);
+	    		mi2.addSelectionListener(sl2);
 	    	}
 	    });
 	    
@@ -161,8 +187,16 @@ public class Interfazz {
 				// TODO Auto-generated method stub
 				if (ti1.getImage().equals(play)) {
 					ti1.setImage(pause);
+					cl.reproduce();
 				}else {
 					ti1.setImage(play);
+					cl.parar();
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 
@@ -171,8 +205,10 @@ public class Interfazz {
 				// TODO Auto-generated method stub
 				if (ti1.getImage().equals(play)) {
 					ti1.setImage(pause);
+					cl.reproduce();
 				}else {
 					ti1.setImage(play);
+					cl.parar();
 				}
 			}
 			
@@ -188,18 +224,30 @@ public class Interfazz {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				// TODO Auto-generated method stub
-				
+				if (list2.getItems().length>0) {
+					
+					list2.remove(0);
+				}
 			}
 			
 		});
 		
 	    shell.open();
 	    while (!shell.isDisposed()) {
+	    	if (ti1.getImage().equals(pause)&&(!cl.estaReproduciendo())) {
+	    		if (list2.getItemCount()!=0) {
+	    			cl.cierraClip();
+	    			String siguiente = list2.getItem(0);
+	    			list2.remove(0);
+	    			cl.reproduccionSinGuardar(siguiente);
+	    		}
+	    	}
 	      if (!display.readAndDispatch())
 	        display.sleep();
 	    }
 	    display.dispose();
 	  
 	}
+	
 	
 }

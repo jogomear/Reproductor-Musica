@@ -5,51 +5,19 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 public class AtenderPeticion implements Runnable{
 
 	private Socket sCliente;
-	private String dirHome = ".";
 	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-//		try(DataInputStream dis = new DataInputStream(sCliente.getInputStream());
-//				DataOutputStream dos = new DataOutputStream(sCliente.getOutputStream())){
-//			String petic = dis.readLine();
-//			File f = buscaCancion(petic);
-//			if(f.exists()) {
-//				try(DataInputStream is = new DataInputStream(new FileInputStream(f))){
-//					
-//				}
-//			}else {
-//				dos.writeBytes("La cancion introducida no esta disponible");
-//			}
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		try(DataInputStream dis = new DataInputStream(sCliente.getInputStream())){
-			/*String nombreCancion = dis.readLine();
-			File cancion = buscaCancion(nombreCancion);
-			try(OutputStream o = sCliente.getOutputStream();
-					FileInputStream i = new FileInputStream(cancion)){
-				byte[] b = new byte[1024*10];
-				int leidos = i.read(b);
-				while (leidos!=-1) {
-					o.write(b,0,leidos);
-					leidos = i.read(b);
-				}
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
 			String peticion = dis.readLine();
 			switch(peticion) {
 			case "1":
@@ -71,7 +39,22 @@ public class AtenderPeticion implements Runnable{
 					e.printStackTrace();
 				}
 			case "2":
-				try(DataOutputStream dos = new DataOutputStream(this.sCliente.getOutputStream())){
+				try(	OutputStream o = sCliente.getOutputStream();
+						OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream("listaCanciones.txt"))){
+					
+					File canciones = new File("Canciones");
+					String[] s = canciones.list();
+					for (int i = 0; i < s.length; i++) {
+						out.write((s[i].split("\\."))[0] + "\r\n");
+					}
+					out.flush();
+					FileInputStream in = new FileInputStream("listaCanciones.txt");
+					byte[] b = new byte[1024*10];
+					int leidos = in.read(b);
+					while (leidos!=-1) {
+						o.write(b,0,leidos);
+						leidos = in.read(b);
+					}
 					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -92,13 +75,8 @@ public class AtenderPeticion implements Runnable{
 	}
 	
 	private File buscaCancion(String nombreCancion) {
-		File canc = new File(dirHome + "\\" + nombreCancion + ".mp3");
+		File canc = new File("Canciones/" + nombreCancion + ".wav");
 		return canc;
-	}
-	
-	private /*String[]*/File listarCanciones() {
-		File contenidoDirectorio = new File(this.dirHome + "\\canciones");
-		return contenidoDirectorio/*.list()*/;
 	}
 
 }
