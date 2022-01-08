@@ -3,15 +3,18 @@ package cliente;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class Cliente {
 	
 	private String host;
 	private int puerto;
+	public ArrayList<String> listadoCanciones;
 	
 	public Cliente(String s, int n) {
 		host = s;
 		puerto = n;
+		this.listadoCanciones = new ArrayList<>();
 	}
 	
 	public void reproduccionSinGuardar() {
@@ -37,15 +40,15 @@ public class Cliente {
 		cl.reproduccionSinGuardar();
 	}
 	
-	public /*String[]*/File listarCanciones() {
+	public void listarCanciones() {
 		try(Socket s = new Socket(this.host, this.puerto)){
 			int numBytesLeidos;
 			byte[]  buff = new byte[1024*32];
-			try(InputStream recibido = s.getInputStream();FileOutputStream nuevo = new FileOutputStream("listadoCanciones.txt");){
+			try(InputStream recibido = s.getInputStream()/*;FileOutputStream nuevo = new FileOutputStream("listadoCanciones.txt");*/){
 				while ((numBytesLeidos = recibido.read(buff)) != -1) {
-					nuevo.write(buff, 0, numBytesLeidos);
+					/*nuevo.write(buff, 0, numBytesLeidos);*/
+					this.listadoCanciones.add(new String(buff));
 				}
-				return new File("listadoCanciones.txt");
 			} catch(IOException e) {
 				e.printStackTrace();
 			}
@@ -56,7 +59,6 @@ public class Cliente {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
 	}
 	
 	
