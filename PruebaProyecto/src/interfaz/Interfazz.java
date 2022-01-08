@@ -63,6 +63,7 @@ public class Interfazz {
 		        
 		        outText += selections + " ";
 		        System.out.println("You selected: " + outText);
+		        list.getMenu().setVisible(true);
 	      }
 
 	      public void widgetDefaultSelected(SelectionEvent event) {
@@ -71,6 +72,7 @@ public class Interfazz {
 	        
 	        outText += selections + " ";
 	        System.out.println("You selected: " + outText);
+	        list.getMenu().setVisible(true);
 	      }
 	    });
 	    
@@ -103,15 +105,40 @@ public class Interfazz {
 	    
 	    final Menu menu = new Menu(list);
 	    
+	    
 	    list.setMenu(menu);
 	    menu.addMenuListener(new MenuAdapter() {
 	    	
+	    	MenuItem mi1 = new MenuItem(menu, SWT.PUSH);
+	    	MenuItem mi2 = new MenuItem(menu, SWT.PUSH);
+	    	
+	    	SelectionListener sl = new SelectionListener() {
+
+    			@Override
+    			public void widgetDefaultSelected(SelectionEvent arg0) {
+    				// TODO Auto-generated method stub
+//    				list2.add(list.getSelection()[0]);
+    			}
+
+    			@Override
+    			public void widgetSelected(SelectionEvent arg0) {
+    				// TODO Auto-generated method stub
+    				int index = list.getSelectionIndex();
+    				if (index>=0) {
+    					list2.add(list.getItem(index));
+    				}
+    			}
+    			
+    		};
+	    	
 	    	public void menuShown(MenuEvent e) {
+	    		mi1.removeSelectionListener(sl); //Para que no se añadan infinitos SelectionListener (Uno por cada vez que se abra el menu)
+	    		int index = list.getFocusIndex();
+	    		System.out.println(index);
+	    		mi1.setText("Añadir a la cola");
+	    		mi2.setText("Reproducir");
 	    		
-	    		int index = list.getSelectionIndex();
-	    		MenuItem mi = new MenuItem(menu, SWT.PUSH);
-	    		mi.setText("Añadir a la cola");
-	    		
+	    		mi1.addSelectionListener(sl);
 	    	}
 	    });
 	    
@@ -180,4 +207,5 @@ public class Interfazz {
 	    display.dispose();
 	  
 	}
+	
 }
