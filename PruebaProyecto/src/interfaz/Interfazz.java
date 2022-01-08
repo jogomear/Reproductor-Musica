@@ -124,14 +124,53 @@ public class Interfazz {
 	    tb.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, true, true));
 	    
 		ToolItem ti1 = new ToolItem(tb, SWT.PUSH);
-		ToolItem ti3 = new ToolItem(tb, SWT.PUSH);
+		ToolItem ti2 = new ToolItem(tb, SWT.PUSH);
 		
+		Image play = new Image(display, "play.png");
+		Image pause = new Image(display, "pausa.png");
+		Image skip = new Image(display, "skip.png");
 		
-		ti1.setImage(new Image(display, "play.png"));
-//		ti2.setImage(new Image(display, "pausa.png"));
-		ti3.setImage(new Image(display, "skip.png"));
+		ti1.setImage(play);
+		ti2.setImage(skip);
 		
-		
+		ti1.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				if (ti1.getImage().equals(play)) {
+					ti1.setImage(pause);
+				}else {
+					ti1.setImage(play);
+				}
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				if (ti1.getImage().equals(play)) {
+					ti1.setImage(pause);
+				}else {
+					ti1.setImage(play);
+				}
+			}
+			
+		});
+		ti2.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		
 	    shell.open();
 	    while (!shell.isDisposed()) {
