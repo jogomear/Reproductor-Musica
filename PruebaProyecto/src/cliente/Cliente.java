@@ -18,6 +18,7 @@ public class Cliente {
 	private Clip clip;
 	private static final File auxiliar = new File("Cancioness");
 	
+	//Constructor con parámetros para la clase Cliente
 	public Cliente(String s, int n){
 		host = s;
 		puerto = n;
@@ -25,7 +26,9 @@ public class Cliente {
 		listarCanciones();
 	}
 	
-	public void reproduccionSinGuardar(String cancion) {
+	//Pre: cancion es un string que coincide con el nombre de archivo .wav, contenido por el servidor
+	//Post: se pide el archivo de audio al servidor y se reproduce
+	public void reproduccion(String cancion) {
 		try (Socket s = new Socket(host, puerto);
 				InputStream in = s.getInputStream();
 				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
@@ -61,14 +64,15 @@ public class Cliente {
 		}
 	}
 	
+	//Pre:
+	//Post: rellena el atributo listadoCanciones con los titulos de los archivos .wav contenidos por el servidor
 	public void listarCanciones() {
 		try(Socket s = new Socket(this.host, this.puerto);
 				DataOutputStream dos = new DataOutputStream(s.getOutputStream())){
 			dos.writeBytes("2\r\n");
 			String leidos;
-			try(BufferedReader recibido = new BufferedReader(new InputStreamReader(s.getInputStream()))/*;FileOutputStream nuevo = new FileOutputStream("listadoCanciones.txt");*/){
+			try(BufferedReader recibido = new BufferedReader(new InputStreamReader(s.getInputStream()))){
 				while ((leidos = recibido.readLine()) != null) {
-					/*nuevo.write(buff, 0, numBytesLeidos);*/
 					this.listadoCanciones.add(leidos);
 				}
 			} catch(IOException e) {
@@ -83,18 +87,33 @@ public class Cliente {
 		}
 	}
 	
+	//Pre:
+	//Post: para la reproduccion del clip
 	public void parar() {
 		clip.stop();
 	}
+	//Pre:
+	//Post: reproduce el clip
 	public void reproduce() {
 		clip.start();
 	}
+	//Pre:
+	//Post: devuelve true si el clip se está reproduciendo y falso en caso contrario
 	public boolean estaReproduciendo() {
 		return clip.isRunning();
 	}
+	//Pre: 
+	//Post: cierra el clip
 	public void cierraClip() {
 		clip.close();
 	}
+	//Pre: 
+	//Post: devuelve true, si el clip está abierto con un archivo y falso en caso contrario
+	public boolean clipAbierto() {
+		return clip != null;
+	}
+	//Pre:
+	//Post: borra de la carpeta del cliente los archivos de audio
 	public void borraCanciones() {
 		for (File f : auxiliar.listFiles()) {
 			f.delete();
