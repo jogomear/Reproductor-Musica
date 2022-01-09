@@ -18,9 +18,7 @@ public class Servidor {
 					pool.execute(new AtenderPeticion(conexion));
 				} catch(IOException e) {
 					e.printStackTrace();
-				} finally {
-					pool.shutdown();
-				}
+				} 
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -17,13 +17,14 @@ public class AtenderPeticion implements Runnable{
 	
 	@Override
 	public void run() {
-		try(DataInputStream dis = new DataInputStream(sCliente.getInputStream())){
+		try(DataInputStream dis = new DataInputStream(sCliente.getInputStream());
+				OutputStream o = sCliente.getOutputStream();){
 			String peticion = dis.readLine();
 			switch(peticion) {
 			case "1":
 				String nombreCancion = dis.readLine();
 				File cancion = buscaCancion(nombreCancion);
-				try(OutputStream o = sCliente.getOutputStream();
+				try(
 						FileInputStream i = new FileInputStream(cancion)){
 					byte[] b = new byte[1024*10];
 					int leidos = i.read(b);
@@ -39,7 +40,7 @@ public class AtenderPeticion implements Runnable{
 					e.printStackTrace();
 				}
 			case "2":
-				try(	OutputStream o = sCliente.getOutputStream();
+				try(
 						OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream("listaCanciones.txt"))){
 					
 					File canciones = new File("Canciones");

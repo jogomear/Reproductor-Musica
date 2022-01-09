@@ -109,6 +109,14 @@ public class Interfazz {
 	    
 	    final Menu menu = new Menu(list);
 	    
+	    ToolBar tb = new ToolBar(g2, SWT.BOTTOM);
+	    
+	    ToolItem ti1 = new ToolItem(tb, SWT.PUSH);
+		ToolItem ti2 = new ToolItem(tb, SWT.PUSH);
+		
+		Image play = new Image(display, "play.png");
+		Image pause = new Image(display, "pausa.png");
+		Image skip = new Image(display, "skip.png");
 	    
 	    list.setMenu(menu);
 	    menu.addMenuListener(new MenuAdapter() {
@@ -144,6 +152,7 @@ public class Interfazz {
     			@Override
     			public void widgetSelected(SelectionEvent arg0) {
     				// TODO Auto-generated method stub
+    				ti1.setImage(pause);
     				cl.reproduccionSinGuardar(list.getItem(list.getSelectionIndex()));
     			}
     			
@@ -162,20 +171,11 @@ public class Interfazz {
 	    	}
 	    });
 	    
-	    
-	    ToolBar tb = new ToolBar(g2, SWT.BOTTOM);
 	    GridLayout gl = new GridLayout();
 	    gl.numColumns = 2;
 	    gl.makeColumnsEqualWidth = true;
 	    tb.setLayout(gl);
 	    tb.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, true, true));
-	    
-		ToolItem ti1 = new ToolItem(tb, SWT.PUSH);
-		ToolItem ti2 = new ToolItem(tb, SWT.PUSH);
-		
-		Image play = new Image(display, "play.png");
-		Image pause = new Image(display, "pausa.png");
-		Image skip = new Image(display, "skip.png");
 		
 		ti1.setImage(play);
 		ti2.setImage(skip);
@@ -225,7 +225,8 @@ public class Interfazz {
 			public void widgetSelected(SelectionEvent arg0) {
 				// TODO Auto-generated method stub
 				if (list2.getItems().length>0) {
-					
+					cl.cierraClip();
+					cl.reproduccionSinGuardar(list2.getItem(0));
 					list2.remove(0);
 				}
 			}

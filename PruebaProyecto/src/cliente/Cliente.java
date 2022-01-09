@@ -28,7 +28,7 @@ public class Cliente {
 		try (Socket s = new Socket(host, puerto);
 				InputStream in = s.getInputStream();
 				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-				FileOutputStream fos = new FileOutputStream("Canciones/" + cancion + ".wav")){
+				FileOutputStream fos = new FileOutputStream("Cancioness/" + cancion + ".wav")){
 			dos.writeBytes("1\r\n");
 			dos.writeBytes(cancion + "\r\n");
 			byte[] b = new byte[1024*10];
@@ -37,14 +37,11 @@ public class Cliente {
 				fos.write(b, 0, leido);
 				leido = in.read(b);
 			}
-			File canc = new File(cancion + ".wav");
+			File canc = new File("Cancioness/" + cancion + ".wav");
 			clip = AudioSystem.getClip();
 			clip.open(AudioSystem.getAudioInputStream(canc));
 			clip.start();
-			Thread.sleep(100);//Si no se pone, hay veces que se acaba el programa antes de que se reproduzca el audio
-			while (clip.isOpen()) {
-				Thread.sleep(1000);
-			}
+			Thread.sleep(1000);//Si no se pone, hay veces que se acaba el programa antes de que se reproduzca el audio
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
