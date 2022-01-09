@@ -12,6 +12,8 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -19,9 +21,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -33,13 +37,16 @@ import cliente.Cliente;
 public class Interfazz {
 
 	public static void main(String[] args) throws LineUnavailableException, IOException, UnsupportedAudioFileException, InterruptedException {
+		
+		
 		Display display = new Display();
 	    Shell shell = new Shell(display);
-	    shell.setText("List Example");
+	    shell.setText("Reproductor de música");
 	    shell.setSize(270, 450);
 	    shell.setLayout(new GridLayout(1, false));
 	    
 	    Cliente cl = new Cliente("localhost", 50000);
+	    cl.borraCanciones();
 	    
 	    Group g1 = new Group(shell, SWT.NONE);
 	    g1.setText("CancionesDisponibles");
@@ -67,21 +74,11 @@ public class Interfazz {
 	    list.addSelectionListener(new SelectionListener() {
 
 	      public void widgetSelected(SelectionEvent event) {
-	    	  int selections = list.getSelectionIndex();
-		        String outText = "";
-		        
-		        outText += selections + " ";
-		        System.out.println("You selected: " + outText);
-		        list.getMenu().setVisible(true);
+	    	  list.getMenu().setVisible(true);
 	      }
 
 	      public void widgetDefaultSelected(SelectionEvent event) {
-	        int selections = list.getSelectionIndex();
-	        String outText = "";
-	        
-	        outText += selections + " ";
-	        System.out.println("You selected: " + outText);
-	        list.getMenu().setVisible(true);
+	    	  list.getMenu().setVisible(true);
 	      }
 	    });
 	    
@@ -92,18 +89,12 @@ public class Interfazz {
 
 	      public void widgetSelected(SelectionEvent event) {
 	    	  int selections = list2.getSelectionIndex();
-		        String outText = "";
-		        
-		        outText += selections + " ";
-		        System.out.println("You selected: " + outText);
+		      list2.remove(selections);
 	      }
 
 	      public void widgetDefaultSelected(SelectionEvent event) {
-	        int selections = list2.getSelectionIndex();
-	        String outText = "";
-	        
-	        outText += selections + " ";
-	        System.out.println("You selected: " + outText);
+	    	  int selections = list2.getSelectionIndex();
+		      list2.remove(selections);
 	      }
 	    });
 	    
@@ -154,6 +145,7 @@ public class Interfazz {
     				// TODO Auto-generated method stub
     				ti1.setImage(pause);
     				cl.reproduccionSinGuardar(list.getItem(list.getSelectionIndex()));
+    				cl.borraCanciones();
     			}
     			
     		};
@@ -162,10 +154,8 @@ public class Interfazz {
 	    		mi1.removeSelectionListener(sl1); //Para que no se añadan infinitos SelectionListener (Uno por cada vez que se abra el menu)
 	    		mi2.removeSelectionListener(sl2);
 	    		int index = list.getFocusIndex();
-	    		System.out.println(index);
 	    		mi1.setText("Añadir a la cola");
 	    		mi2.setText("Reproducir");
-	    		
 	    		mi1.addSelectionListener(sl1);
 	    		mi2.addSelectionListener(sl2);
 	    	}
@@ -228,6 +218,7 @@ public class Interfazz {
 					cl.cierraClip();
 					cl.reproduccionSinGuardar(list2.getItem(0));
 					list2.remove(0);
+					cl.borraCanciones();
 				}
 			}
 			
@@ -241,6 +232,7 @@ public class Interfazz {
 	    			String siguiente = list2.getItem(0);
 	    			list2.remove(0);
 	    			cl.reproduccionSinGuardar(siguiente);
+	    			cl.borraCanciones();
 	    		}
 	    	}
 	      if (!display.readAndDispatch())

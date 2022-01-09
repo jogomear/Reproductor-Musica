@@ -16,6 +16,7 @@ public class Cliente {
 	private int puerto;
 	public ArrayList<String> listadoCanciones;
 	private Clip clip;
+	private static final File auxiliar = new File("Cancioness");
 	
 	public Cliente(String s, int n){
 		host = s;
@@ -94,5 +95,9 @@ public class Cliente {
 	public void cierraClip() {
 		clip.close();
 	}
-
+	public void borraCanciones() {
+		for (File f : auxiliar.listFiles()) {
+			f.delete();
+		}
+	}
 }
